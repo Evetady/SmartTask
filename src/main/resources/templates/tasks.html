@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>Задачи</title>
+    <link rel="stylesheet" href="/css/style.css">
+</head>
+<body>
+<div class="container">
+    <header>
+        <h1>Мои задачи</h1>
+        <div class="user-info">
+            <span th:text="${'Пользователь: ' + username}"></span>
+            <form th:action="@{/logout}" method="post" style="display: inline;">
+                <button type="submit" class="btn-logout">Выйти</button>
+            </form>
+        </div>
+    </header>
+
+    <div class="tasks-container">
+        <div class="add-task">
+            <h2>Добавить новую задачу</h2>
+            <form th:action="@{/tasks}" method="post">
+                <div>
+                    <label>Название:</label>
+                    <input type="text" name="title" required>
+                </div>
+                <div>
+                    <label>Описание:</label>
+                    <textarea name="description"></textarea>
+                </div>
+                <div>
+                    <label>Срок выполнения:</label>
+                    <input type="datetime-local" name="dueDate">
+                </div>
+                <button type="submit">Добавить задачу</button>
+            </form>
+        </div>
+
+        <div class="tasks-list">
+            <h2>Список задач</h2>
+            <div th:if="${tasks.empty}" class="no-tasks">
+                У вас пока нет задач
+            </div>
+            <div th:each="task : ${tasks}" class="task-item">
+                <h3 th:text="${task.title}"></h3>
+                <p th:text="${task.description}"></p>
+                <div class="task-meta">
+                    <span th:text="${'Срок: ' + #temporals.format(task.dueDate, 'dd.MM.yyyy HH:mm')}"></span>
+                    <span th:text="${'Статус: ' + task.status}"></span>
+                </div>
+                <div class="task-actions">
+                    <form th:action="@{/tasks/{id}/complete(id=${task.id})}" method="post" style="display: inline;">
+                        <button type="submit" class="btn-complete">Завершить</button>
+                    </form>
+                    <form th:action="@{/tasks/{id}/delete(id=${task.id})}" method="post" style="display: inline;">
+                        <button type="submit" class="btn-delete">Удалить</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+</body>
+</html>
